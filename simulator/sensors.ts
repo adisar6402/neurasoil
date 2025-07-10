@@ -28,15 +28,21 @@ export class SensorSimulator {
   }
 
   private simulateSensorReadings() {
-    // Simulate sensor readings every 30 seconds
+    // Simulate sensor readings every 45 seconds (optimized for free tier)
     const interval = setInterval(async () => {
-      await this.generateSensorData();
-    }, 30000);
+      if (this.isRunning) {
+        await this.generateSensorData();
+      }
+    }, 45000);
     
     this.intervals.push(interval);
     
-    // Generate initial readings
-    this.generateSensorData();
+    // Generate initial readings after a small delay
+    setTimeout(() => {
+      if (this.isRunning) {
+        this.generateSensorData();
+      }
+    }, 2000);
   }
 
   private async generateSensorData() {

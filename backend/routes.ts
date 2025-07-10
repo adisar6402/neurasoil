@@ -7,8 +7,10 @@ import { insertSensorReadingSchema, insertAlertSchema } from "../shared/schema";
 import { Parser } from "json2csv";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Start sensor simulation
-  sensorSimulator.start();
+  // Start sensor simulation with delay to prevent startup overload
+  setTimeout(() => {
+    sensorSimulator.start();
+  }, 3000);
 
   // Get latest sensor readings
   app.get("/api/sensors/latest", async (req, res) => {

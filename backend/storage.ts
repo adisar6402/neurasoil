@@ -41,6 +41,7 @@ export class MemStorage implements IStorage {
   private alerts: Map<number, Alert>;
   private activityLog: Map<number, ActivityLog>;
   private currentId: number;
+  private maxStorageSize: number;
 
   constructor() {
     this.sensorReadings = new Map();
@@ -48,6 +49,15 @@ export class MemStorage implements IStorage {
     this.alerts = new Map();
     this.activityLog = new Map();
     this.currentId = 1;
+    this.maxStorageSize = 200; // Limit memory usage
+  }
+
+  private cleanupOldEntries<T>(map: Map<number, T>, maxSize: number) {
+    if (map.size > maxSize) {
+      const entries = Array.from(map.entries());
+      const toDelete = entries.slice(0, entries.length - maxSize);
+      toDelete.forEach(([key]) => map.delete(key));
+    }
   }
 
   async insertSensorReading(reading: InsertSensorReading): Promise<SensorReading> {
@@ -59,6 +69,7 @@ export class MemStorage implements IStorage {
       status: reading.status || "normal",
     };
     this.sensorReadings.set(id, newReading);
+    this.cleanupOldEntries(this.sensorReadings, this.maxStorageSize);
     return newReading;
   }
 
@@ -153,6 +164,7 @@ export class MemStorage implements IStorage {
       timestamp: new Date(),
     };
     this.activityLog.set(id, newActivity);
+    this.cleanupOldEntries(this.activityLog, 50); // Keep fewer activity logs
     return newActivity;
   }
 
