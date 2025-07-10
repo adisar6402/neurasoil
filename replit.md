@@ -8,6 +8,26 @@ NeuraSoil is an offline-first, edge-AI system designed for the Africa Deep Tech 
 
 Preferred communication style: Simple, everyday language.
 
+## Recent Changes (July 2025)
+
+✅ **Enhanced User Experience & Structure** (July 10, 2025):
+- **Reorganized codebase** into clear folder structure:
+  - `/backend` → API routes, data storage, prediction endpoints  
+  - `/frontend` → React dashboard components
+  - `/ml` → Prediction logic (mock model/rules)
+  - `/simulator` → Sensor simulation logic
+- **Working Quick Action buttons**:
+  - View Trends → Opens modal with historical data and charts
+  - Export Data → Downloads sensor logs as CSV 
+  - Settings → Language toggle, alert preferences, units selection
+- **Farmer-friendly improvements**:
+  - Larger, easier-to-read fonts throughout interface
+  - Enhanced typography with `.farmer-friendly` CSS classes
+  - Multi-language support (English, Yoruba, Hausa, Swahili, French)
+- **Language Context Provider** for internationalization
+- **Enhanced modals** for trends analysis and settings management
+- **CSV export functionality** for sensor data
+
 ## System Architecture
 
 ### Frontend Architecture

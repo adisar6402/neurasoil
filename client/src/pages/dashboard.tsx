@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,11 +7,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SensorCard } from "@/components/sensor-card";
 import { PredictionCard } from "@/components/prediction-card";
 import { ActivityLog } from "@/components/activity-log";
+import { TrendsModal } from "@/components/trends-modal";
+import { SettingsModal } from "@/components/settings-modal";
 import { apiRequest } from "@/lib/queryClient";
 import { RefreshCw, Sun, CloudRain, TrendingUp, Download, Settings, X } from "lucide-react";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
+  const [showTrendsModal, setShowTrendsModal] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   // Fetch sensor data
   const { data: sensors, isLoading: sensorsLoading } = useQuery({
@@ -61,7 +66,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Hero Section */}
+        {/* Hero Section - Enhanced for farmers */}
         <div className="relative rounded-2xl overflow-hidden mb-8">
           <img
             src="https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&h=400"
@@ -70,9 +75,9 @@ export default function Dashboard() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30 flex items-center">
             <div className="px-8 text-white">
-              <h2 className="text-3xl font-bold mb-2">Welcome to NeuraSoil</h2>
-              <p className="text-lg opacity-90 mb-4">Monitor your soil health with AI-powered predictions</p>
-              <div className="text-sm opacity-75">
+              <h2 className="text-4xl font-bold mb-3">Welcome to NeuraSoil</h2>
+              <p className="text-xl opacity-90 mb-4">Monitor your soil health with AI-powered predictions</p>
+              <div className="text-base opacity-75">
                 🌱 Built by Abdulrahman Adisa Amuda – Africa Deep Tech 2025
               </div>
             </div>
@@ -250,16 +255,33 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <Button variant="outline" className="w-full justify-start">
-                    <TrendingUp className="w-4 h-4 mr-3" />
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-base py-6"
+                    onClick={() => setShowTrendsModal(true)}
+                  >
+                    <TrendingUp className="w-5 h-5 mr-3" />
                     View Trends
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Download className="w-4 h-4 mr-3" />
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-base py-6"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = '/api/sensors/export?format=csv';
+                      link.download = 'neurasoil_data.csv';
+                      link.click();
+                    }}
+                  >
+                    <Download className="w-5 h-5 mr-3" />
                     Export Data
                   </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Settings className="w-4 h-4 mr-3" />
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start text-base py-6"
+                    onClick={() => setShowSettingsModal(true)}
+                  >
+                    <Settings className="w-5 h-5 mr-3" />
                     Settings
                   </Button>
                 </div>
@@ -293,6 +315,10 @@ export default function Dashboard() {
 
         {/* Activity Log */}
         <ActivityLog />
+        
+        {/* Modals */}
+        <TrendsModal isOpen={showTrendsModal} onClose={() => setShowTrendsModal(false)} />
+        <SettingsModal isOpen={showSettingsModal} onClose={() => setShowSettingsModal(false)} />
       </main>
     </div>
   );

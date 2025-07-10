@@ -11,7 +11,7 @@ import {
   type InsertAlert,
   type ActivityLog,
   type InsertActivityLog
-} from "@shared/schema";
+} from "../shared/schema";
 
 export interface IStorage {
   // Sensor readings
