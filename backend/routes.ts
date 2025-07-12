@@ -46,28 +46,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Export sensor data as CSV
   app.get("/api/sensors/export", async (req, res) => {
-    try {
-      const format = req.query.format as string || "csv";
-      const limit = parseInt(req.query.limit as string) || 1000;
-      const readings = await storage.getSensorReadingsHistory(limit);
-      
-      if (format === "csv") {
-        const fields = ['id', 'sensorType', 'value', 'unit', 'status', 'timestamp'];
-        const json2csvParser = new Parser({ fields });
-        const csv = json2csvParser.parse(readings);
-        
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename="sensor_data.csv"');
-        res.send(csv);
-      } else {
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Content-Disposition', 'attachment; filename="sensor_data.json"');
-        res.json(readings);
-      }
-    } catch (error) {
-      res.status(500).json({ error: "Failed to export sensor data" });
+  try {
+    const format = (req.query.format as string)?.toLowerCase() || "csv";
+    const limit = parseInt(req.query.limit as string) || 1000;
+
+    const readings = await storage.getSensorReadingsHistory(limit);
+
+    // ✅ Transform timestamp to ISO string to fix empty export issue
+    const transformedReadings = readings.map(reading => ({
+      ...reading,
+      timestamp: reading.timestamp.toISOString(), // 🛠️ Ensure date is exportable
+    }));
+
+    if (format === "csv") {
+      const fields = ['id', 'sensorType', 'value', 'unit', 'status', 'timestamp'];
+      const json2csvParser = new Parser({ fields });
+      const csv = json2csvParser.parse(transformedReadings);
+
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="sensor_data.csv"');
+      res.send(csv);
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', 'attachment; filename="sensor_data.json"');
+      res.json(transformedReadings);
     }
-  });
+  } catch (error) {
+    console.error("❌ Export error:", error);
+    res.status(500).json({ error: "Failed to export sensor data" });
+  }
+});
 
   // Get trends data
   app.get("/api/trends", async (req, res) => {

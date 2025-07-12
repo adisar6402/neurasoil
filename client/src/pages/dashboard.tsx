@@ -269,7 +269,7 @@ export default function Dashboard() {
                     onClick={() => {
                       const link = document.createElement('a');
                       link.href = '/api/sensors/export?format=csv';
-                      link.download = 'neurasoil_data.csv';
+                      link.download = `neurasoil_data_${new Date().toISOString().split('T')[0]}.csv`;
                       link.click();
                     }}
                   >
@@ -315,6 +315,18 @@ export default function Dashboard() {
 
         {/* Activity Log */}
         <ActivityLog />
+        
+        {/* Footer */}
+        <footer className="mt-12 pt-8 border-t border-gray-200">
+          <div className="text-center space-y-2">
+            <p className="text-lg font-medium text-gray-700">
+              🌱 NeuraSoil — Built with 💡 by Abdulrahman Adisa Amuda for the Africa Deep Tech Challenge 2025
+            </p>
+            <p className="text-sm text-gray-500">
+              Offline-first AI for soil prediction & farmer resilience
+            </p>
+          </div>
+        </footer>
         
         {/* Modals */}
         <TrendsModal isOpen={showTrendsModal} onClose={() => setShowTrendsModal(false)} />
