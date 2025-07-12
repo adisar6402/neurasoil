@@ -103,12 +103,12 @@ SensorService
 git clone https://github.com/YOUR_USERNAME/neurasoil.git
 cd neurasoil
 
-text
+
 
 2. Install dependencies  
 npm install
 
-text
+
 
 3. Start backend API  
 npm run dev:server
@@ -119,7 +119,7 @@ text
 cd client
 npm run dev
 
-text
+
 
 Sensor readings and predictions auto-refresh every 30 seconds.
 
